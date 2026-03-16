@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>가츠봇 🤖 — AI 어시스턴트</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+  
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  :root {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface2: #1e1e1e;
+    --border: #2a2a2a;
+    --text: #e5e5e5;
+    --text-dim: #888;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --green: #22c55e;
+    --orange: #f59e0b;
+    --red: #ef4444;
+  }
+  
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+  
+  .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+  
+  /* Hero */
+  .hero {
+    padding: 80px 0 60px;
+    text-align: center;
+    position: relative;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-emoji { font-size: 64px; margin-bottom: 16px; }
+  .hero h1 { font-size: 42px; font-weight: 700; margin-bottom: 8px; }
+  .hero .subtitle { font-size: 18px; color: var(--text-dim); font-weight: 300; }
+  .hero .tagline {
+    margin-top: 24px;
+    font-size: 15px;
+    color: var(--text-dim);
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.8;
+  }
+  
+  /* Stats bar */
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    padding: 32px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin: 40px 0;
+  }
+  .stat { text-align: center; }
+  .stat-num { font-size: 28px; font-weight: 700; color: var(--accent); }
+  .stat-label { font-size: 13px; color: var(--text-dim); margin-top: 4px; }
+  
+  /* Section */
+  .section { margin-bottom: 64px; }
+  .section-title {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 32px;
+    font-weight: 600;
+  }
+  
+  /* Capability cards */
+  .cap-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .cap-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .cap-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .cap-icon { font-size: 28px; margin-bottom: 12px; }
+  .cap-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .cap-card p { font-size: 13px; color: var(--text-dim); line-height: 1.6; }
+  
+  /* Timeline / Case studies */
+  .case {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .case::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2));
+    border-radius: 3px;
+  }
+  .case-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+  }
+  .tag-invest { background: rgba(59,130,246,0.15); color: var(--accent); }
+  .tag-biz { background: rgba(139,92,246,0.15); color: var(--accent2); }
+  .tag-ops { background: rgba(34,197,94,0.15); color: var(--green); }
+  .tag-data { background: rgba(245,158,11,0.15); color: var(--orange); }
+  .tag-dev { background: rgba(239,68,68,0.15); color: var(--red); }
+  .case h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .case p { font-size: 13px; color: var(--text-dim); line-height: 1.7; }
+  .case-result {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--green);
+  }
+  
+  /* Tool list */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .tool {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+    font-size: 13px;
+    transition: border-color 0.2s;
+  }
+  .tool:hover { border-color: var(--accent); }
+  .tool-icon { font-size: 24px; margin-bottom: 8px; }
+  .tool-name { font-weight: 600; margin-bottom: 4px; }
+  .tool-desc { color: var(--text-dim); font-size: 11px; }
+  
+  /* How it works */
+  .flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 40px 0;
+    flex-wrap: wrap;
+  }
+  .flow-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    width: 160px;
+  }
+  .flow-step .emoji { font-size: 32px; margin-bottom: 8px; }
+  .flow-step .label { font-size: 13px; font-weight: 500; }
+  .flow-arrow { font-size: 20px; color: var(--text-dim); }
+  
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 48px 0;
+    border-top: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 13px;
+  }
+  .footer a { color: var(--accent); text-decoration: none; }
+  
+  @media (max-width: 640px) {
+    .cap-grid { grid-template-columns: 1fr; }
+    .tools-grid { grid-template-columns: repeat(2, 1fr); }
+    .stats { gap: 24px; flex-wrap: wrap; }
+    .hero h1 { font-size: 32px; }
+    .flow { flex-direction: column; }
+    .flow-arrow { transform: rotate(90deg); }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-emoji">🤖</div>
+    <h1>가츠봇</h1>
+    <div class="subtitle">AI 어시스턴트 · 24시간 대기</div>
+    <div class="tagline">
+      투자 분석, 사업 운영, 데이터 처리, 인수인계, 법률 검토, 뉴스 브리핑까지.<br>
+      텔레그램 한 줄이면 됩니다.
+    </div>
+  </div>
+  
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num">24/7</div>
+      <div class="stat-label">항시 대기</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">30+</div>
+      <div class="stat-label">연동 스킬</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">&lt;1분</div>
+      <div class="stat-label">평균 응답</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">∞</div>
+      <div class="stat-label">기억 용량</div>
+    </div>
+  </div>
+  
+  <!-- Capabilities -->
+  <div class="section">
+    <div class="section-title">💡 핵심 역량</div>
+    <div class="cap-grid">
+      <div class="cap-card">
+        <div class="cap-icon">📊</div>
+        <h3>투자 분석</h3>
+        <p>기업 분석, 공시 모니터링, 수급 추적, 시나리오별 확률 산출, 매매 전략 수립. 감사보고서·재무제표 심층 분석.</p>
+      </div>
+      <div class="cap-card">
+        <div class="cap-icon">🏢</div>
+        <h3>사업 운영</h3>
+        <p>브랜드 인수인계, 거래처 원장 분석, 발주·정산 검증, 광고비 정합성 체크, 계약 검토.</p>
+      </div>
+      <div class="cap-card">
+        <div class="cap-icon">📝</div>
+        <h3>문서 작성</h3>
+        <p>인수인계 템플릿, 미팅 아젠다, 체크리스트, 노션 호환 마크다운. 한국어/영어.</p>
+      </div>
+      <div class="cap-card">
+        <div class="cap-icon">🔍</div>
+        <h3>리서치</h3>
+        <p>실시간 뉴스 검색, 경쟁사 분석, 시장 동향, 규제 확인, 논문 요약. 웹 전체가 소스.</p>
+      </div>
+      <div class="cap-card">
+        <div class="cap-icon">📈</div>
+        <h3>데이터 분석</h3>
+        <p>엑셀 파싱, 거래 내역 대조, 차액 추적, CRM 데이터 분석, 코호트/LTV 산출.</p>
+      </div>
+      <div class="cap-card">
+        <div class="cap-icon">⚖️</div>
+        <h3>법률·규제</h3>
+        <p>건기식 표시광고법, 의약외품 규제, 상장폐지 요건, 소송 분석, 계약서 검토.</p>
+      </div>
+      <div class="cap-card">
+        <div class="cap-icon">🌍</div>
+        <h3>글로벌 브리핑</h3>
+        <p>실시간 글로벌 뉴스 요약, 지정학 분석, 유가·금리·환율 동향, 시장 영향도 분석.</p>
+      </div>
+      <div class="cap-card">
+        <div class="cap-icon">🛠️</div>
+        <h3>자동화·개발</h3>
+        <p>쿠팡 API 연동, 웹사이트 제작, 코딩 에이전트 관리, 크론 스케줄링, 서버 관리.</p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Real Cases -->
+  <div class="section">
+    <div class="section-title">🎯 실제 수행 사례</div>
+    
+    <div class="case">
+      <span class="case-tag tag-invest">투자분석</span>
+      <h3>셀루메드(049180) 심층 분석 리포트</h3>
+      <p>관리종목 바이오 기업의 감사의견 시나리오별 확률 산출, 세력 수급 패턴 분석, 외국인 매매 추적, FDA 승인 제품 가치 평가, 분할매도 전략 수립.</p>
+      <div class="case-result">→ 4개 시나리오 × 확률 × 주가 예측 → 기대값 기반 행동 플랜 제공</div>
+    </div>
+    
+    <div class="case">
+      <span class="case-tag tag-biz">사업운영</span>
+      <h3>맨즈픽·뉴로포커스 브랜드 인수인계</h3>
+      <p>퇴사하는 팀장으로부터 2개 건기식 브랜드를 인수받기 위한 체계적 인수인계 프레임워크 설계. 6개 카테고리 체크리스트, 노션 템플릿, 미팅 아젠다 작성.</p>
+      <div class="case-result">→ 노션 복붙 가능한 템플릿 → 빈칸 채우기 형태로 팀장에게 전달</div>
+    </div>
+    
+    <div class="case">
+      <span class="case-tag tag-data">데이터분석</span>
+      <h3>거래처 원장 정합성 검증</h3>
+      <p>데이블·타불라·디벨니티 거래처 원장 엑셀 파싱 → 입금 vs 세금계산서 발행 대조 → 220만원 미정산 선급금 발견 및 발생 시점 추적.</p>
+      <div class="case-result">→ 2023년 11월 선입금 220만원 미정산 확인 → 환불/차감 요청 근거 제공</div>
+    </div>
+    
+    <div class="case">
+      <span class="case-tag tag-biz">제품기획</span>
+      <h3>림데이(Lymday) 신제품 런칭 기획</h3>
+      <p>블루 스피룰리나 + 라임 테라피워터 신제품의 브랜딩 전략, 상세페이지 분석, 경쟁사 벤치마킹, 검색 태그 20종 선정, 기획 갭 6건 식별.</p>
+      <div class="case-result">→ 원가구조·식약처 규제·타겟 검증 등 즉시 실행 가능한 액션 3개 도출</div>
+    </div>
+
+    <div class="case">
+      <span class="case-tag tag-ops">법률·분쟁</span>
+      <h3>동방코스메틱 거래 분쟁 분석</h3>
+      <p>2년치 카카오톡 대화 11,894줄 분석, 거래 타임라인 재구성, 취소 손해 산출(14건/626,000원), 외상 600만원 대응 전략 수립.</p>
+      <div class="case-result">→ 법적 포지션 정리 + 협상 시나리오 제공</div>
+    </div>
+
+    <div class="case">
+      <span class="case-tag tag-dev">인프라</span>
+      <h3>쿠팡 API 연동 & 서버 관리</h3>
+      <p>Mac Mini 기반 자동화 인프라 구축, 쿠팡 API 화이트리스트 관리, 브라우저 자동화, 크론 스케줄링.</p>
+      <div class="case-result">→ 24시간 자동 모니터링 체계 구축</div>
+    </div>
+  </div>
+  
+  <!-- How it works -->
+  <div class="section">
+    <div class="section-title">⚡ 작동 방식</div>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="emoji">💬</div>
+        <div class="label">텔레그램<br>메시지</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="emoji">🧠</div>
+        <div class="label">AI 분석<br>& 실행</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="emoji">🔧</div>
+        <div class="label">30+ 도구<br>자동 연동</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="emoji">✅</div>
+        <div class="label">결과 전달<br>& 기억</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Tools -->
+  <div class="section">
+    <div class="section-title">🔧 연동 도구</div>
+    <div class="tools-grid">
+      <div class="tool">
+        <div class="tool-icon">🌐</div>
+        <div class="tool-name">웹 검색</div>
+        <div class="tool-desc">실시간 뉴스·정보</div>
+      </div>
+      <div class="tool">
+        <div class="tool-icon">🖥️</div>
+        <div class="tool-name">브라우저</div>
+        <div class="tool-desc">웹 자동화·스크래핑</div>
+      </div>
+      <div class="tool">
+        <div class="tool-icon">📁</div>
+        <div class="tool-name">파일 시스템</div>
+        <div class="tool-desc">읽기·쓰기·편집</div>
+      </div>
+      <div class="tool">
+        <div class="tool-icon">⚙️</div>
+        <div class="tool-name">터미널</div>
+        <div class="tool-desc">명령어 실행</div>
+      </div>
+      <div class="tool">
+        <div class="tool-icon">📊</div>
+        <div class="tool-name">엑셀 분석</div>
+        <div class="tool-desc">데이터 파싱·계산</div>
+      </div>
+      <div class="tool">
+        <div class="tool-icon">📄</div>
+        <div class="tool-name">PDF 분석</div>
+        <div class="tool-desc">문서 해석·요약</div>
+      </div>
+      <div class="tool">
+        <div class="tool-icon">🖼️</div>
+        <div class="tool-name">이미지 분석</div>
+        <div class="tool-desc">시각 데이터 해석</div>
+      </div>
+      <div class="tool">
+        <div class="tool-icon">🔊</div>
+        <div class="tool-name">음성 변환</div>
+        <div class="tool-desc">TTS·음성 합성</div>
+      </div>
+      <div class="tool">
+        <div class="tool-icon">💾</div>
+        <div class="tool-name">장기 기억</div>
+        <div class="tool-desc">대화·결정 기록</div>
+      </div>
+      <div class="tool">
+        <div class="tool-icon">🤖</div>
+        <div class="tool-name">서브 에이전트</div>
+        <div class="tool-desc">병렬 작업 위임</div>
+      </div>
+      <div class="tool">
+        <div class="tool-icon">📱</div>
+        <div class="tool-name">디바이스 연동</div>
+        <div class="tool-desc">카메라·위치·알림</div>
+      </div>
+      <div class="tool">
+        <div class="tool-icon">💬</div>
+        <div class="tool-name">멀티 채널</div>
+        <div class="tool-desc">텔레그램·슬랙·디코</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Footer -->
+  <div class="footer">
+    <p>Powered by <a href="https://openclaw.ai" target="_blank">OpenClaw</a> + Claude Opus</p>
+    <p style="margin-top: 8px;">가츠봇 · 친근하고 실용적인 AI 어시스턴트 🤖</p>
+  </div>
+  
+</div>
+
+</body>
+</html>
